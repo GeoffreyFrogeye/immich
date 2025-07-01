@@ -59,7 +59,12 @@ export class DuplicateRepository {
           qb
             .selectFrom('duplicates')
             .select('duplicateId')
-            .where((eb) => eb(eb.fn('json_array_length', ['assets']), '=', 1)),
+            .where(
+              (eb) => eb.or([
+                eb(eb.fn('json_array_length', ['assets']), '=', 1),
+                eb(eb.fn('json_array_length', ['assets']), '>', 50)
+              ])
+            ),
         )
         .with('removed_unique', (qb) =>
           qb
